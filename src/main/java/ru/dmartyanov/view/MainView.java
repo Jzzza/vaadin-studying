@@ -1,11 +1,17 @@
 package ru.dmartyanov.view;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
+import ru.dmartyanov.components.EmployeeEditor;
 import ru.dmartyanov.domain.Employee;
 import ru.dmartyanov.repo.EmployeeRepo;
+
 
 @Route
 public class MainView extends VerticalLayout {
@@ -13,11 +19,33 @@ public class MainView extends VerticalLayout {
 
     private Grid<Employee> grid = new Grid<>(Employee.class);
 
-    @Autowired
-    public MainView(EmployeeRepo employeeRepo) {
-        this.employeeRepo = employeeRepo;
+    private final TextField filter = new TextField("", "Type to filter");
+    private final Button addNewButton = new Button("Add new");
+    private final HorizontalLayout toolbar = new HorizontalLayout(filter, addNewButton);
 
-        add(grid);
+    private final EmployeeEditor editor;
+
+    @Autowired
+    public MainView(EmployeeRepo employeeRepo, EmployeeEditor editor) {
+        this.employeeRepo = employeeRepo;
+        this.editor = editor;
+
+        add(toolbar, grid, editor);
+
+        filter.setValueChangeMode(ValueChangeMode.EAGER);
+        filter.addValueChangeListener(e -> showEmployee(e.getValue()));
+
+        grid.asSingleSelect().addValueChangeListener(e -> {
+            editor.editEmployee(e.getValue());
+        });
+
+        addNewButton.addClickListener(e -> editor.editEmployee(new Employee()));
+
+        editor.setChangeHandler(() -> {
+            editor.setVisible(true);
+            showEmployee(filter.getValue());
+        });
+
         showEmployee("");
     }
 

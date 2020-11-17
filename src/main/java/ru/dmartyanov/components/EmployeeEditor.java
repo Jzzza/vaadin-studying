@@ -57,7 +57,7 @@ public class EmployeeEditor extends VerticalLayout implements KeyNotifier {
         setVisible(false);
     }
 
-    private void editEmployee(Employee newEmployee) {
+    public void editEmployee(Employee newEmployee) {
         if (newEmployee == null) {
             setVisible(false);
             return;
