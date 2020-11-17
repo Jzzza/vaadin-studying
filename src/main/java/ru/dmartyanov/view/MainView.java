@@ -18,7 +18,15 @@ public class MainView extends VerticalLayout {
         this.employeeRepo = employeeRepo;
 
         add(grid);
-        grid.setItems(employeeRepo.findAll());
+        showEmployee("");
+    }
+
+    private void showEmployee(String name) {
+        if (name.isEmpty()) {
+            grid.setItems(employeeRepo.findAll());
+        }else{
+            grid.setItems(employeeRepo.findByName(name));
+        }
     }
 
 }
