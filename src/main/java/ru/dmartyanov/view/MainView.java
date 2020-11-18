@@ -28,6 +28,7 @@ public class MainView extends VerticalLayout {
     @Autowired
     public MainView(EmployeeRepo employeeRepo, EmployeeEditor editor) {
         this.employeeRepo = employeeRepo;
+
         this.editor = editor;
 
         add(toolbar, grid, editor);
